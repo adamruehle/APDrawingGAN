@@ -5,6 +5,7 @@ import os
 import numpy as np
 import cv2
 import prepare_mask
+import face_align_512
 
 def main(path):
   file = dfl.detect_facial_landmarks(path)
@@ -12,6 +13,7 @@ def main(path):
   function_directory = 'preprocess'
   eng.addpath(os.path.abspath(function_directory), nargout=0)
   landmarks = eng.load(file)
+  # landmarks = face_align_512.
   print(landmarks)
   pathname = ".\\" + os.path.splitext(path)[0].split("\\")[1] + "\\" + os.path.splitext(path)[0].split("\\")[2]
   eng.face_align_512(path, landmarks, pathname)
