@@ -18,7 +18,9 @@ coord5point = (coord5point-240)/560 * 512 + 256;
 
 % load and align, resize image to imgSize
 img      = imread(impath);
-facial5point = double(facial5point);
+xCoords = facial5point.landmarks(:, 1);
+yCoords = facial5point.landmarks(:, 2);
+facial5point = double([xCoords, yCoords]);
 transf   = cp2tform(facial5point, coord5point, 'similarity');
 trans_img  = imtransform(img, transf, 'XData', [1 imgSize(2)],...
                                     'YData', [1 imgSize(1)],...
