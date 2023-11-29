@@ -9,6 +9,7 @@ def main(path):
   function_directory = 'preprocess'
   eng.addpath(os.path.abspath(function_directory), nargout=0)
   landmarks = eng.load(file)
+  print(landmarks)
   (img, txt) = eng.face_align_512(path, landmarks, "imgs")
   eng.quit()
 
