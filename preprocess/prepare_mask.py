@@ -20,21 +20,20 @@ def create_background_mask(image_path):
     image = cv2.imread(image_path)
     mask = np.zeros_like(image)
     x, y, w, h = face_coordinates
-    cv2.rectangle(mask, (x, y), (y+w, y+h), (255, 255, 255), thickness=cv2.FILLED)
+    points = np.array([[x, y], [x+w, y], [x+w, y+h], [x, y+h]])
+
+    # Calculate Bezier control points
+    control_points = [
+      (points[0] + points[1]) // 2,
+      (points[1] + points[2]) // 2,
+      (points[2] + points[3]) // 2,
+      (points[3] + points[0]) // 2
+    ]
+
+    # Draw Bezier curves
+    cv2.polylines(mask, [points.astype(int)], isClosed=True, color=(255, 255, 255), thickness=2)
+    cv2.polylines(mask, [np.array(control_points).astype(int)], isClosed=True, color=(255, 255, 255), thickness=2)
+    cv2.fillPoly(mask, [np.array(control_points).astype(int)], (255, 255, 255))
     return mask
   else:
     return None
-
-if __name__ == "__main__":
-  image_path = "myImages\\AdamRuehle\\data\\test_single\\AdamRuehle_aligned.png"
-  background_mask = create_background_mask(image_path)
-
-  if background_mask is not None:
-    # Visualize the results
-    cv2.imshow("Original Image", cv2.imread(image_path))
-    cv2.imshow("Background Mask", background_mask)
-    pathname = ".\\" + os.path.splitext(image_path)[0].split("\\")[1] + "\\" + os.path.splitext(image_path)[0].split("\\")[2] + "\\" + 'AdamR.png'
-    print(pathname)
-    # cv2.imwrite(pathname, background_mask)
-  else:
-    print("No face detected in the image.")
