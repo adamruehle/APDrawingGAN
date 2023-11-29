@@ -1,4 +1,4 @@
-function [trans_img,trans_facial5point]=face_align_512(impath,facial5point,savedir)
+function [trans_img,trans_facial5point]=face_align_512(impath,facial5point,imglocation, txtlocation)
 % align the faces by similarity transformation.
 % using 5 facial landmarks: 2 eyes, nose, 2 mouth corners.
 %   impath: path to image
@@ -30,16 +30,16 @@ trans_facial5point = round(tformfwd(transf,facial5point));
 
 
 %% save results
-if ~exist(savedir,'dir')
-    mkdir(savedir)
-end
+%if ~exist(i,'dir')
+%    mkdir(savedir)
+%end
 [~,name,~] = fileparts(impath);
 % save trans_img
-imwrite(trans_img, fullfile(savedir,[name,'_aligned.png']));
-fprintf('write aligned image to %s\n',fullfile(savedir,[name,'_aligned.png']));
+imwrite(trans_img, fullfile(imglocation,[name,'_aligned.png']));
+fprintf('write aligned image to %s\n',fullfile(imglocation,[name,'_aligned.png']));
 % save trans_facial5point
-write_5pt(fullfile(savedir, [name, '_aligned.txt']), trans_facial5point);
-fprintf('write transformed facial landmark to %s\n',fullfile(savedir,[name,'_aligned.txt']));
+write_5pt(fullfile(txtlocation, [name, '_aligned.txt']), trans_facial5point);
+fprintf('write transformed facial landmark to %s\n',fullfile(txtlocation,[name,'_aligned.txt']));
 
 %% show results
 imshow(trans_img); hold on;

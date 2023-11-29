@@ -13,13 +13,13 @@ def main(path):
   eng.addpath(os.path.abspath(function_directory), nargout=0)
   landmarks = eng.load(file)
   print(landmarks)
-  pathname = ".\\" + os.path.splitext(path)[0].split("\\")[1] + "\\" + os.path.splitext(path)[0].split("\\")[2]
-  eng.face_align_512(path, landmarks, pathname)
-  
-  aligned_image_path = pathname + "\\" + os.path.splitext(path)[0].split("\\")[2] + "_aligned.png"
-  print(aligned_image_path)
-  background_mask = prepare_mask.create_background_mask(aligned_image_path)
-  cv2.imwrite(pathname + "\\" + "mask" + "\\" + "ALL" + "\\" + os.path.splitext(path)[0].split("\\")[2] + "_mask" + ".png", background_mask)
+  # pathname = ".\\" + os.path.splitext(path)[0].split("\\")[1] + "\\" + os.path.splitext(path)[0].split("\\")[2]
+  eng.face_align_512(path, landmarks, "dataset/data/test_single", "dataset/landmark/ALL")
+
+  # aligned_image_path = pathname + "\\" + os.path.splitext(path)[0].split("\\")[2] + "_aligned.png"
+  # print(aligned_image_path)
+  # background_mask = prepare_mask.create_background_mask(aligned_image_path)
+  # cv2.imwrite(pathname + "\\" + "mask" + "\\" + "ALL" + "\\" + os.path.splitext(path)[0].split("\\")[2] + "_mask" + ".png", background_mask)
 
   eng.quit()
 
