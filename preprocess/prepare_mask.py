@@ -5,6 +5,7 @@ import os
 
 def detect_face(image_path):
   image = cv2.imread(image_path)
+  image = cv2.convertScaleAbs(image)
   detector = mtcnn.MTCNN()
   faces = detector.detect_faces(image)
   if faces:
