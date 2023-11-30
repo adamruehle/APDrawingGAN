@@ -43,12 +43,12 @@ def segment_person(image_path):
 
     return resized_image
 
-# Path to your image
-image_path = "dataset/data/test_single/DavidWeaver_aligned.png"
-
-# Perform segmentation
-segmented_image = segment_person(image_path)
-
-save_path = "dataset/mask/ALL/DavidWeaver_aligned.png"
-# Save the segmented image
-cv2.imwrite(save_path, segmented_image)
+# # Path to your image
+# image_path = "dataset/data/test_single/DavidWeaver_aligned.png"
+#
+# # Perform segmentation
+# segmented_image = segment_person(image_path)
+#
+# save_path = "dataset/mask/ALL/DavidWeaver_aligned.png"
+# # Save the segmented image
+# cv2.imwrite(save_path, segmented_image)

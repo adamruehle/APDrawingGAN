@@ -13,11 +13,11 @@ def main(path):
   landmarks = scipy.io.loadmat(file)
   # print(landmarks)
   aligned_image_path = face_align_512.face_align_512(path, landmarks, "dataset/data/test_single", "dataset/landmark/ALL")
-  # print(aligned_image_path)
-  background_mask = prepare_mask.create_background_mask(aligned_image_path)
+  print(aligned_image_path)
+  background_mask = prepare_mask.segment_person(aligned_image_path)
   # save background mask to /dataset/mask/ALL
   name = os.path.splitext(os.path.basename(path))[0]
-  cv2.imwrite("dataset/mask/ALL/" + name + "_mask.png", background_mask)
+  cv2.imwrite("dataset/mask/ALL/" + name + "_aligned.png", background_mask)
 
   # eng.quit()
 
