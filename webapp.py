@@ -47,7 +47,7 @@ def process_image():
 
 @app.route('/run_test_script', methods=['GET'])
 def run_test_script():
-    os.system("python test.py --dataroot dataset/data/test_single --name formal_author --model test --dataset_mode single --norm batch --use_local --which_epoch 300")
+    os.system("python test.py --dataroot dataset/data/test_single --name formal_author --model test --dataset_mode single --norm batch --use_local --which_epoch 300 --gpu_ids -1")
     return 'Test script executed'
 
 @app.route('/results/<path:filename>')
