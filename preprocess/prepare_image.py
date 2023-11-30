@@ -1,14 +1,14 @@
 # import matlab.engine
-import detect_facial_landmarks as dfl
+from . import detect_facial_landmarks as dfl
 import argparse
 import os
 import numpy as np
 import cv2
-import prepare_mask
-import face_align_512
+from . import prepare_mask
+from . import face_align_512
 import scipy.io
 
-def main(path):
+def prepare_image(path):
   file = dfl.detect_facial_landmarks(path)
   landmarks = scipy.io.loadmat(file)
   # print(landmarks)
@@ -19,12 +19,10 @@ def main(path):
   name = os.path.splitext(os.path.basename(path))[0]
   cv2.imwrite("dataset/mask/ALL/" + name + "_aligned.png", background_mask)
 
-  # eng.quit()
-
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   parser.add_argument('path', type=str)
   args = parser.parse_args()
   path = args.path
   print(path)
-  main(path)
+  prepare_image(path)

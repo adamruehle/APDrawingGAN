@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AP Drawing GAN</title>
+    <style>
+        /* Some basic styling for the page */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AP Drawing GAN Image Upload</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="imageInput" accept="image/*">
+        <input type="submit" value="Upload">
+    </form>
+    <button id="processButton" disabled>Process Images</button>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData();
+            var fileInput = document.getElementById('imageInput');
+            formData.append('file', fileInput.files[0]);
+
+            // Disable the upload button while uploading and processing
+            document.getElementById('processButton').disabled = true;
+
+            fetch('/process_image', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                // Re-enable the process button after processing
+                document.getElementById('processButton').disabled = false;
+            });
+        });
+
+        document.getElementById('processButton').addEventListener('click', function() {
+            fetch('/run_test_script', {
+                method: 'GET'
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/results/formal_author/test_300/index.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
