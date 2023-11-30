@@ -40,10 +40,7 @@ def segment_person(image_path):
     mask = np.argmax(mask, axis=-1)
     person_mask = np.where(mask == 15, 255, 0).astype(np.uint8)
 
-    # Apply mask to the original image
-    segmented_img = cv2.bitwise_and(img[0], img[0], mask=person_mask)
-
-    return segmented_img
+    return person_mask
 
 # Path to your image
 image_path = "C:\\Users\\Louis\\Documents\\VSCode\\Python\\APDrawingGAN\\myImages\\AdamRuehle\\AdamRuehle.png"
@@ -51,7 +48,6 @@ image_path = "C:\\Users\\Louis\\Documents\\VSCode\\Python\\APDrawingGAN\\myImage
 # Perform segmentation
 segmented_image = segment_person(image_path)
 
-# Display the segmented image
-plt.imshow(segmented_image)
-plt.axis('off')
-plt.show()
+save_path = "C:\\Users\\Louis\\Documents\\VSCode\\Python\\APDrawingGAN\\myImages\\AdamRuehle\\AdamRuehle_segmented.png"
+# Save the segmented image
+cv2.imwrite(save_path, segmented_image)
