@@ -1,40 +1,57 @@
-import cv2
-import mtcnn
 import numpy as np
-import os
+import cv2
+import matplotlib.pyplot as plt
+import tensorflow as tf
 
-def detect_face(image_path):
-  image = cv2.imread(image_path)
-  image = cv2.convertScaleAbs(image)
-  detector = mtcnn.MTCNN()
-  faces = detector.detect_faces(image)
-  if faces:
-    x, y, w, h = faces[0]['box']
-    return x, y, w, h
-  else:
-    return None
-  
-def create_background_mask(image_path):
-  face_coordinates = detect_face(image_path)
+# Load TFLite model
+tflite_model_path = "C:\\Users\\Louis\\Documents\\VSCode\\Python\\APDrawingGAN\\preprocess\\1.tflite"
+interpreter = tf.lite.Interpreter(model_path=tflite_model_path)
+interpreter.allocate_tensors()
 
-  if face_coordinates is not None:
-    image = cv2.imread(image_path)
-    mask = np.zeros_like(image)
-    x, y, w, h = face_coordinates
-    points = np.array([[x, y], [x+w, y], [x+w, y+h], [x, y+h]])
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
 
-    # Calculate Bezier control points
-    control_points = [
-      (points[0] + points[1]) // 2,
-      (points[1] + points[2]) // 2,
-      (points[2] + points[3]) // 2,
-      (points[3] + points[0]) // 2
-    ]
+input_shape = input_details[0]['shape'][1:3]
 
-    # Draw Bezier curves
-    cv2.polylines(mask, [points.astype(int)], isClosed=True, color=(255, 255, 255), thickness=2)
-    cv2.polylines(mask, [np.array(control_points).astype(int)], isClosed=True, color=(255, 255, 255), thickness=2)
-    cv2.fillPoly(mask, [np.array(control_points).astype(int)], (255, 255, 255))
-    return mask
-  else:
-    return None
+def segment_person(image_path):
+    # Load the image
+    img = cv2.imread(image_path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    # Resize image to expected model input size
+    img = cv2.resize(img, input_shape)
+
+    # Normalize pixel values
+    img = img / 255.0
+
+    # Add batch dimension
+    img = np.expand_dims(img, axis=0).astype(np.float32)
+
+    # Set input tensor
+    interpreter.set_tensor(input_details[0]['index'], img)
+
+    # Run inference
+    interpreter.invoke()
+
+    # Get the segmentation mask
+    mask = interpreter.get_tensor(output_details[0]['index'])[0]
+
+    # Thresholding the mask to get the person segmentation
+    mask = np.argmax(mask, axis=-1)
+    person_mask = np.where(mask == 15, 255, 0).astype(np.uint8)
+
+    # Apply mask to the original image
+    segmented_img = cv2.bitwise_and(img[0], img[0], mask=person_mask)
+
+    return segmented_img
+
+# Path to your image
+image_path = "C:\\Users\\Louis\\Documents\\VSCode\\Python\\APDrawingGAN\\myImages\\AdamRuehle\\AdamRuehle.png"
+
+# Perform segmentation
+segmented_image = segment_person(image_path)
+
+# Display the segmented image
+plt.imshow(segmented_image)
+plt.axis('off')
+plt.show()
