@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 
 # Load TFLite model
-tflite_model_path = "C:\\Users\\Louis\\Documents\\VSCode\\Python\\APDrawingGAN\\preprocess\\1.tflite"
+tflite_model_path = "preprocess/1.tflite"
 interpreter = tf.lite.Interpreter(model_path=tflite_model_path)
 interpreter.allocate_tensors()
 
@@ -39,15 +39,16 @@ def segment_person(image_path):
     # Thresholding the mask to get the person segmentation
     mask = np.argmax(mask, axis=-1)
     person_mask = np.where(mask == 15, 255, 0).astype(np.uint8)
+    resized_image = cv2.resize(person_mask, (512, 512))
 
-    return person_mask
+    return resized_image
 
 # Path to your image
-image_path = "C:\\Users\\Louis\\Documents\\VSCode\\Python\\APDrawingGAN\\myImages\\AdamRuehle\\AdamRuehle.png"
+image_path = "dataset/data/test_single/DavidWeaver_aligned.png"
 
 # Perform segmentation
 segmented_image = segment_person(image_path)
 
-save_path = "C:\\Users\\Louis\\Documents\\VSCode\\Python\\APDrawingGAN\\myImages\\AdamRuehle\\AdamRuehle_segmented.png"
+save_path = "dataset/mask/ALL/DavidWeaver_aligned.png"
 # Save the segmented image
 cv2.imwrite(save_path, segmented_image)
