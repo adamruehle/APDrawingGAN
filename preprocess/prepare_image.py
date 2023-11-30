@@ -1,4 +1,4 @@
-import matlab.engine
+# import matlab.engine
 import detect_facial_landmarks as dfl
 import argparse
 import os
@@ -6,24 +6,20 @@ import numpy as np
 import cv2
 import prepare_mask
 import face_align_512
+import scipy.io
 
 def main(path):
   file = dfl.detect_facial_landmarks(path)
-  eng = matlab.engine.start_matlab()
-  function_directory = 'preprocess'
-  eng.addpath(os.path.abspath(function_directory), nargout=0)
-  landmarks = eng.load(file)
-  # landmarks = face_align_512.
-  print(landmarks)
-  # pathname = ".\\" + os.path.splitext(path)[0].split("\\")[1] + "\\" + os.path.splitext(path)[0].split("\\")[2]
-  eng.face_align_512(path, landmarks, "dataset/data/test_single", "dataset/landmark/ALL")
-
-  # aligned_image_path = pathname + "\\" + os.path.splitext(path)[0].split("\\")[2] + "_aligned.png"
+  landmarks = scipy.io.loadmat(file)
+  # print(landmarks)
+  aligned_image_path = face_align_512.face_align_512(path, landmarks, "dataset/data/test_single", "dataset/landmark/ALL")
   # print(aligned_image_path)
-  # background_mask = prepare_mask.create_background_mask(aligned_image_path)
-  # cv2.imwrite(pathname + "\\" + "mask" + "\\" + "ALL" + "\\" + os.path.splitext(path)[0].split("\\")[2] + "_mask" + ".png", background_mask)
+  background_mask = prepare_mask.create_background_mask(aligned_image_path)
+  # save background mask to /dataset/mask/ALL
+  name = os.path.splitext(os.path.basename(path))[0]
+  cv2.imwrite("dataset/mask/ALL/" + name + "_mask.png", background_mask)
 
-  eng.quit()
+  # eng.quit()
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
